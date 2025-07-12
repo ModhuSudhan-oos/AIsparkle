@@ -1,0 +1,112 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Remote Tools Hub</title>
+    <link rel="stylesheet" href="admin-dashboard-style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <img src="assets/logo.png" alt="Remote Tools Hub" class="sidebar-logo">
+                <h2>Admin Dashboard</h2>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#"><i class="dashboard-icon"></i> Dashboard</a></li>
+                    <li><a href="#"><i class="tools-icon"></i> Tools Management</a></li>
+                    <li><a href="#"><i class="categories-icon"></i> Categories</a></li>
+                    <li><a href="#"><i class="users-icon"></i> Users</a></li>
+                    <li><a href="#"><i class="analytics-icon"></i> Analytics</a></li>
+                    <li><a href="#"><i class="settings-icon"></i> Settings</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button id="logoutBtn"><i class="logout-icon"></i> Logout</button>
+            </div>
+        </aside>
+        
+        <main class="admin-main">
+            <header class="admin-header">
+                <div class="header-left">
+                    <h1>Tools Management</h1>
+                    <p>Add, edit, or remove tools from your platform</p>
+                </div>
+                <div class="header-right">
+                    <div class="admin-search">
+                        <input type="text" placeholder="Search tools...">
+                        <button><i class="search-icon"></i></button>
+                    </div>
+                    <button class="add-tool-btn">+ Add New Tool</button>
+                </div>
+            </header>
+            
+            <div class="admin-content">
+                <div class="stats-cards">
+                    <div class="stats-card">
+                        <div class="stats-value">156</div>
+                        <div class="stats-label">Total Tools</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-value">54</div>
+                        <div class="stats-label">Categories</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-value">12,458</div>
+                        <div class="stats-label">Monthly Visitors</div>
+                    </div>
+                    <div class="stats-card">
+                        <div class="stats-value">87%</div>
+                        <div class="stats-label">Engagement Rate</div>
+                    </div>
+                </div>
+                
+                <div class="tools-management">
+                    <div class="section-header">
+                        <h2>All Tools</h2>
+                        <div class="tools-filter">
+                            <select>
+                                <option>All Categories</option>
+                                <option>Communication</option>
+                                <option>Project Management</option>
+                                <option>Design</option>
+                                <option>Development</option>
+                            </select>
+                            <select>
+                                <option>Sort by: Newest</option>
+                                <option>Sort by: Popular</option>
+                                <option>Sort by: A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="tools-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tool Name</th>
+                                    <th>Category</th>
+                                    <th>Pricing</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="toolsTableBody">
+                                <!-- Dynamically loaded from Firebase -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="admin-dashboard.js"></script>
+</body>
+</html>
