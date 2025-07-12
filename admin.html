@@ -1,4 +1,4 @@
-<!-- admin.html -->
+<!-- admin.html (updated) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +17,7 @@
             
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active"><a href="#"><i class="dashboard-icon"></i> Dashboard</a></li>
+                    <li><a href="#" class="active"><i class="dashboard-icon"></i> Dashboard</a></li>
                     <li><a href="#"><i class="tools-icon"></i> Tools Management</a></li>
                     <li><a href="#"><i class="categories-icon"></i> Categories</a></li>
                     <li><a href="#"><i class="users-icon"></i> Users</a></li>
@@ -39,21 +39,21 @@
                 </div>
                 <div class="header-right">
                     <div class="admin-search">
-                        <input type="text" placeholder="Search tools...">
-                        <button><i class="search-icon"></i></button>
+                        <input type="text" id="adminSearchInput" placeholder="Search tools...">
+                        <button id="searchBtn"><i class="search-icon"></i></button>
                     </div>
-                    <button class="add-tool-btn">+ Add New Tool</button>
+                    <button class="add-tool-btn" id="addToolBtn">+ Add New Tool</button>
                 </div>
             </header>
             
             <div class="admin-content">
                 <div class="stats-cards">
                     <div class="stats-card">
-                        <div class="stats-value">156</div>
+                        <div class="stats-value" id="totalTools">0</div>
                         <div class="stats-label">Total Tools</div>
                     </div>
                     <div class="stats-card">
-                        <div class="stats-value">54</div>
+                        <div class="stats-value" id="totalCategories">0</div>
                         <div class="stats-label">Categories</div>
                     </div>
                     <div class="stats-card">
@@ -70,17 +70,16 @@
                     <div class="section-header">
                         <h2>All Tools</h2>
                         <div class="tools-filter">
-                            <select>
-                                <option>All Categories</option>
-                                <option>Communication</option>
-                                <option>Project Management</option>
-                                <option>Design</option>
-                                <option>Development</option>
+                            <select id="categoryFilter">
+                                <option value="all">All Categories</option>
+                                <!-- Categories will be populated dynamically -->
                             </select>
-                            <select>
-                                <option>Sort by: Newest</option>
-                                <option>Sort by: Popular</option>
-                                <option>Sort by: A-Z</option>
+                            <select id="sortFilter">
+                                <option value="newest">Sort by: Newest</option>
+                                <option value="name-asc">Sort by: A-Z</option>
+                                <option value="name-desc">Sort by: Z-A</option>
+                                <option value="rating-desc">Sort by: Highest Rating</option>
+                                <option value="rating-asc">Sort by: Lowest Rating</option>
                             </select>
                         </div>
                     </div>
@@ -89,24 +88,106 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Tool Name</th>
-                                    <th>Category</th>
-                                    <th>Pricing</th>
-                                    <th>Rating</th>
-                                    <th>Status</th>
+                                    <th data-sort="name">Tool Name</th>
+                                    <th data-sort="category">Category</th>
+                                    <th data-sort="pricing">Pricing</th>
+                                    <th data-sort="rating">Rating</th>
+                                    <th data-sort="status">Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody id="toolsTableBody">
-                                <!-- Dynamically loaded from Firebase -->
+                                <!-- Tools will be loaded dynamically -->
                             </tbody>
                         </table>
+                        <div class="pagination" id="pagination">
+                            <!-- Pagination will be generated here -->
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Add/Edit Tool Modal -->
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2 id="modalTitle">Add New Tool</h2>
+            <form id="toolForm">
+                <input type="hidden" id="toolId">
+                
+                <div class="form-group">
+                    <label for="toolName">Tool Name *</label>
+                    <input type="text" id="toolName" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="toolCategory">Category *</label>
+                        <select id="toolCategory" required>
+                            <!-- Categories will be populated dynamically -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="toolPricing">Pricing Model *</label>
+                        <select id="toolPricing" required>
+                            <option value="Free">Free</option>
+                            <option value="Freemium">Freemium</option>
+                            <option value="Paid">Paid</option>
+                            <option value="Subscription">Subscription</option>
+                            <option value="Open Source">Open Source</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="shortDesc">Short Description *</label>
+                    <textarea id="shortDesc" rows="2" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="longDesc">Long Description</label>
+                    <textarea id="longDesc" rows="4"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="toolWebsite">Website URL *</label>
+                    <input type="url" id="toolWebsite" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="toolRating">Rating (0-5)</label>
+                        <input type="number" id="toolRating" min="0" max="5" step="0.1" value="4.5">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="toolStatus">Status</label>
+                        <select id="toolStatus">
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="archived">Archived</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="toolFeatures">Features (comma separated)</label>
+                    <textarea id="toolFeatures" rows="2" placeholder="Feature 1, Feature 2, Feature 3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="toolIcon">Icon File Name</label>
+                    <input type="text" id="toolIcon" placeholder="toolname.png">
+                </div>
+                
+                <button type="submit" class="save-btn">Save Tool</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module" src="admin-dashboard.js"></script>
 </body>
-</html>
+    </html>
