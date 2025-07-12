@@ -1,0 +1,145 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Tools Hub - Productivity Tools for Professionals</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="assets/favicon.ico">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a href="/" class="logo">
+                <img src="assets/logo.png" alt="Remote Tools Hub">
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#categories">Categories</a></li>
+                    <li><a href="#featured">Featured</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="admin-login.html" class="admin-btn">Admin Login</a></li>
+                </ul>
+            </nav>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Boost Productivity with the Best Remote Tools</h1>
+                <p>Discover, compare, and manage your remote work toolkit in one place</p>
+                <div class="search-bar">
+                    <input type="text" id="globalSearch" placeholder="Search 1000+ remote tools...">
+                    <button><i class="search-icon"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2>Browse by Category</h2>
+            <div class="categories-grid" id="categoriesContainer">
+                <!-- Dynamically loaded from Firebase -->
+            </div>
+        </div>
+    </section>
+
+    <section id="featured" class="featured-tools">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Remote Tools</h2>
+                <div class="view-all">
+                    <a href="#" id="viewAllTools">View All Tools</a>
+                </div>
+            </div>
+            <div class="tools-grid" id="featuredTools">
+                <!-- Dynamically loaded from Firebase -->
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Browse Tools</h3>
+                    <p>Explore hundreds of remote work tools across 50+ categories</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Compare Features</h3>
+                    <p>Detailed comparison of features, pricing, and integrations</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Build Your Stack</h3>
+                    <p>Create your perfect remote work toolkit for maximum productivity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h3>Stay Updated with the Latest Tools</h3>
+                <p>Subscribe to our weekly newsletter for tool updates and productivity tips</p>
+                <form id="newsletterForm">
+                    <input type="email" placeholder="Your work email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <img src="assets/logo.png" alt="Remote Tools Hub" class="footer-logo">
+                    <p>Your ultimate resource for remote work tools and productivity solutions</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Categories</h4>
+                    <ul id="footerCategories">
+                        <!-- Dynamically loaded from Firebase -->
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="twitter"></i></a>
+                        <a href="#"><i class="linkedin"></i></a>
+                        <a href="#"><i class="github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 Remote Tools Hub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="script.js"></script>
+</body>
+                  </html>
