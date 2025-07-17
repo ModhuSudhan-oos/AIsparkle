@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - AI Tools Pro</title>
+    <meta name="description" content="Learn more about AI Tools Pro, our mission to connect you with the best AI innovations.">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-poppins transition-colors duration-500 ease-in-out">
+
+    <button id="scrollToTopBtn" class="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none transition-all duration-300 opacity-0 invisible z-50">
+        <i class="fas fa-arrow-up text-lg"></i>
+    </button>
+
+    <header class="p-4 shadow-md dark:shadow-none bg-white dark:bg-gray-900 fixed top-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300">AI Tools Pro</a>
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-8 font-medium">
+                    <li><a href="/" class="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                    <li><a href="about.html" class="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                    <li><a href="contact.html" class="hover:text-blue-600 transition-colors duration-200">Contact</a></li>
+                </ul>
+                <button id="themeToggle" class="p-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none hover:ring-2 hover:ring-blue-500 transition-all duration-300">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden text-lg"></i>
+                    <i class="fas fa-moon text-blue-300 hidden dark:inline-block text-lg"></i>
+                </button>
+                <button class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none text-2xl" id="mobileMenuButton">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-950 z-40 hidden md:hidden flex flex-col items-center justify-center space-y-8 text-2xl animate-fade-in-down">
+            <button class="absolute top-6 right-6 text-gray-800 dark:text-gray-200 focus:outline-none" id="closeMobileMenuButton">
+                <i class="fas fa-times text-3xl"></i>
+            </button>
+            <a href="/" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">Home</a>
+            <a href="about.html" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">About</a>
+            <a href="contact.html" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">Contact</a>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-16">
+        <section class="container mx-auto px-4 py-12 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-center mb-10 text-gray-900 dark:text-gray-100">About AI Tools Pro</h1>
+            <div class="max-w-4xl mx-auto text-lg leading-relaxed bg-white dark:bg-gray-800 p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    Welcome to **AI Tools Pro**, your premier destination for discovering the most innovative and effective Artificial Intelligence tools. In a rapidly evolving digital landscape, AI is transforming industries and personal productivity. Our mission is to cut through the noise and present you with a curated directory of high-quality AI tools that can truly make a difference in your work and life.
+                </p>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    We believe that harnessing the power of AI should be accessible to everyone. Whether you're a content creator looking for advanced writing assistants, a marketer aiming for better SEO, a developer seeking coding insights, or just curious about what AI can do, AI Tools Pro is designed to help you find exactly what you need.
+                </p>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    Our team is passionate about technology and committed to keeping our directory updated with the latest advancements. We strive to provide clear, concise descriptions and easy navigation so you can quickly identify and utilize tools across various categories, including Writing, SEO, Image Generation, Audio Production, Video Editing, Code Assistance, and much more.
+                </p>
+                <p class="text-gray-700 dark:text-gray-300">
+                    Thank you for visiting AI Tools Pro. We're excited to be part of your AI journey and help you unlock new possibilities. If you have any suggestions or specific tools you'd like to see featured, please don't hesitate to <a href="contact.html" class="text-blue-600 hover:underline">contact us</a>.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 dark:bg-gray-950 text-gray-300 py-12">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
+            <div class="text-center md:text-left">
+                <h3 class="text-3xl font-extrabold text-white mb-2">AI Tools Pro</h3>
+                <p class="text-sm text-gray-400">&copy; 2025 AI Tools Pro. All rights reserved.</p>
+                <p class="text-sm text-gray-400 mt-1">Built with passion for the future of AI.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="text-xl font-semibold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-3 text-center md:text-left">
+                    <li><a href="about.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">About Us</a></li>
+                    <li><a href="privacy.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Privacy Policy</a></li>
+                    <li><a href="terms.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Terms of Service</a></li>
+                    <li><a href="contact.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Contact</a></li>
+                </ul>
+            </div>
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="text-xl font-semibold text-white mb-4">Follow Us</h4>
+                <div class="flex space-x-5">
+                    <a href="https://twitter.com/yourprofile" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Common UI/UX interactions (for all pages)
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                if (html.classList.contains('dark')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            });
+
+            closeMobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            });
+
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                    scrollToTopBtn.classList.add('opacity-100', 'visible');
+                } else {
+                    scrollToTopBtn.classList.remove('opacity-100', 'visible');
+                    scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                }
+            });
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
