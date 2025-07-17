@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - AI Tools Pro</title>
+    <meta name="description" content="Read our privacy policy regarding data collection and usage on AI Tools Pro.">
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-poppins transition-colors duration-500 ease-in-out">
+
+    <button id="scrollToTopBtn" class="fixed bottom-8 right-8 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none transition-all duration-300 opacity-0 invisible z-50">
+        <i class="fas fa-arrow-up text-lg"></i>
+    </button>
+
+    <header class="p-4 shadow-md dark:shadow-none bg-white dark:bg-gray-900 fixed top-0 left-0 right-0 z-50 transform translate-y-0 transition-all duration-300">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300">AI Tools Pro</a>
+            <div class="flex items-center space-x-6">
+                <ul class="hidden md:flex space-x-8 font-medium">
+                    <li><a href="/" class="hover:text-blue-600 transition-colors duration-200">Home</a></li>
+                    <li><a href="about.html" class="hover:text-blue-600 transition-colors duration-200">About</a></li>
+                    <li><a href="contact.html" class="hover:text-blue-600 transition-colors duration-200">Contact</a></li>
+                </ul>
+                <button id="themeToggle" class="p-3 rounded-full bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 focus:outline-none hover:ring-2 hover:ring-blue-500 transition-all duration-300">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden text-lg"></i>
+                    <i class="fas fa-moon text-blue-300 hidden dark:inline-block text-lg"></i>
+                </button>
+                <button class="md:hidden text-gray-800 dark:text-gray-200 focus:outline-none text-2xl" id="mobileMenuButton">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+        <div id="mobileMenu" class="fixed inset-0 bg-white dark:bg-gray-950 z-40 hidden md:hidden flex flex-col items-center justify-center space-y-8 text-2xl animate-fade-in-down">
+            <button class="absolute top-6 right-6 text-gray-800 dark:text-gray-200 focus:outline-none" id="closeMobileMenuButton">
+                <i class="fas fa-times text-3xl"></i>
+            </button>
+            <a href="/" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">Home</a>
+            <a href="about.html" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">About</a>
+            <a href="contact.html" class="text-gray-800 dark:text-gray-200 hover:text-blue-600 transition-colors duration-200" onclick="document.getElementById('mobileMenu').classList.add('hidden')">Contact</a>
+        </div>
+    </header>
+
+    <main class="pt-28 pb-16">
+        <section class="container mx-auto px-4 py-12 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-center mb-10 text-gray-900 dark:text-gray-100">Privacy Policy</h1>
+            <div class="max-w-4xl mx-auto text-lg leading-relaxed bg-white dark:bg-gray-800 p-8 md:p-12 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    This Privacy Policy describes how AI Tools Pro collects, uses, and discloses your Personal Information when you visit or make a subscription from the Site.
+                </p>
+
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Collection of Personal Information</h2>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    When you visit the Site, we collect certain information about your device, your interaction with the Site, and information necessary to process your subscriptions. We may also collect additional information if you contact us for customer support. In this Privacy Policy, we refer to any information that can uniquely identify an individual (including the information below) as “Personal Information”. See the list below for more information about what Personal Information we collect and why.
+                </p>
+                <ul class="list-disc list-inside mb-6 text-gray-700 dark:text-gray-300">
+                    <li>**Device information:** Version of web browser, IP address, time zone, cookie information, what sites or products you view, search terms, and how you interact with the Site.
+                        <br>_Purpose of collection:_ To load the Site accurately for you, and to perform analytics on Site usage to optimize our Site.
+                        <br>_Source of collection:_ Collected automatically when you access our Site using cookies, log files, web beacons, tags, or pixels.</li>
+                    <li>**Subscription information:** Email address.
+                        <br>_Purpose of collection:_ To provide you with updates, marketing communications, or other information.
+                        <br>_Source of collection:_ Collected from you when you submit the subscription form.</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Sharing Personal Information</h2>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    We share your Personal Information with service providers to help us provide our services and fulfill our contracts with you, as described above. For example:
+                </p>
+                <ul class="list-disc list-inside mb-6 text-gray-700 dark:text-gray-300">
+                    <li>We use Firebase Firestore to store subscription emails. You can read more about how Google uses your Personal Information here: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">https://policies.google.com/privacy</a>.</li>
+                    <li>We may share your Personal Information to comply with applicable laws and regulations, to respond to a subpoena, search warrant or other lawful request for information we receive, or to otherwise protect our rights.</li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Your Rights</h2>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    If you are a resident of the European Economic Area (EEA), you have the right to access the Personal Information we hold about you, to port it to a new service, and to ask that your Personal Information be corrected, updated, or erased. If you would like to exercise this right, please contact us through the contact information below.
+                </p>
+
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Changes</h2>
+                <p class="mb-6 text-gray-700 dark:text-gray-300">
+                    We may update this Privacy Policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal, or regulatory reasons.
+                </p>
+
+                <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-gray-100">Contact</h2>
+                <p class="text-gray-700 dark:text-gray-300">
+                    For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by e-mail at <a href="mailto:your_email@example.com" class="text-blue-600 hover:underline">your_email@example.com</a>.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 dark:bg-gray-950 text-gray-300 py-12">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center md:items-start space-y-8 md:space-y-0">
+            <div class="text-center md:text-left">
+                <h3 class="text-3xl font-extrabold text-white mb-2">AI Tools Pro</h3>
+                <p class="text-sm text-gray-400">&copy; 2025 AI Tools Pro. All rights reserved.</p>
+                <p class="text-sm text-gray-400 mt-1">Built with passion for the future of AI.</p>
+            </div>
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="text-xl font-semibold text-white mb-4">Quick Links</h4>
+                <ul class="space-y-3 text-center md:text-left">
+                    <li><a href="about.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">About Us</a></li>
+                    <li><a href="privacy.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Privacy Policy</a></li>
+                    <li><a href="terms.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Terms of Service</a></li>
+                    <li><a href="contact.html" class="text-gray-300 hover:text-blue-500 transition-colors duration-200">Contact</a></li>
+                </ul>
+            </div>
+            <div class="flex flex-col items-center md:items-start">
+                <h4 class="text-xl font-semibold text-white mb-4">Follow Us</h4>
+                <div class="flex space-x-5">
+                    <a href="https://twitter.com/yourprofile" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="https://linkedin.com/in/yourprofile" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://youtube.com/yourchannel" target="_blank" class="text-gray-300 hover:text-blue-500 transition-colors duration-200 text-3xl" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Common UI/UX interactions (for all pages)
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+
+            if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                html.classList.add('dark');
+            } else {
+                html.classList.remove('dark');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                html.classList.toggle('dark');
+                if (html.classList.contains('dark')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const closeMobileMenuButton = document.getElementById('closeMobileMenuButton');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+            });
+
+            closeMobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+            });
+
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollToTopBtn.classList.remove('opacity-0', 'invisible');
+                    scrollToTopBtn.classList.add('opacity-100', 'visible');
+                } else {
+                    scrollToTopBtn.classList.remove('opacity-100', 'visible');
+                    scrollToTopBtn.classList.add('opacity-0', 'invisible');
+                }
+            });
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
