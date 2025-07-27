@@ -9,11 +9,14 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <style>
+    [v-cloak] { display: none; }
+  </style>
 </head>
 <body class="bg-gray-100">
-  <div id="app" class="min-h-screen flex flex-col">
+  <div id="app" class="min-h-screen flex flex-col" v-cloak>
     <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+    <div v-if="loading" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
         <p class="text-gray-700">Loading Admin Panel...</p>
@@ -21,18 +24,22 @@
     </div>
 
     <!-- Login Screen -->
-    <div id="login-screen" class="hidden fixed inset-0 bg-white z-40 flex items-center justify-center">
+    <div v-if="!user" class="fixed inset-0 bg-white z-40 flex items-center justify-center">
       <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 class="text-2xl font-bold text-center mb-6">Admin Login</h2>
-        <div id="login-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"></div>
-        <form id="login-form" class="space-y-4">
+        <div v-if="loginError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          {{ loginError }}
+        </div>
+        <form @submit.prevent="handleLogin" class="space-y-4">
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-            <input type="email" id="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <input v-model="loginEmail" type="email" id="email" required 
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
           </div>
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <input type="password" id="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <input v-model="loginPassword" type="password" id="password" required 
+                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
           </div>
           <div>
             <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -44,14 +51,16 @@
     </div>
 
     <!-- Main Admin Panel -->
-    <div id="admin-panel" class="hidden flex-1 flex flex-col">
+    <div v-if="user" class="flex-1 flex flex-col">
       <!-- Header -->
       <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 class="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
           <div class="flex items-center space-x-4">
-            <button id="logout-btn" class="text-sm text-gray-600 hover:text-gray-900">Sign Out</button>
-            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium" id="user-avatar">U</div>
+            <button @click="handleLogout" class="text-sm text-gray-600 hover:text-gray-900">Sign Out</button>
+            <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+              {{ user.email.charAt(0).toUpperCase() }}
+            </div>
           </div>
         </div>
       </header>
@@ -71,7 +80,7 @@
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Total Tools</dt>
                       <dd class="flex items-baseline">
-                        <div class="text-2xl font-semibold text-gray-900" id="tools-count">0</div>
+                        <div class="text-2xl font-semibold text-gray-900">{{ stats.tools }}</div>
                       </dd>
                     </dl>
                   </div>
@@ -89,7 +98,7 @@
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Active Features</dt>
                       <dd class="flex items-baseline">
-                        <div class="text-2xl font-semibold text-gray-900" id="features-count">0</div>
+                        <div class="text-2xl font-semibold text-gray-900">{{ stats.features }}</div>
                       </dd>
                     </dl>
                   </div>
@@ -107,7 +116,7 @@
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">FAQs</dt>
                       <dd class="flex items-baseline">
-                        <div class="text-2xl font-semibold text-gray-900" id="faqs-count">0</div>
+                        <div class="text-2xl font-semibold text-gray-900">{{ stats.faqs }}</div>
                       </dd>
                     </dl>
                   </div>
@@ -125,7 +134,7 @@
                     <dl>
                       <dt class="text-sm font-medium text-gray-500 truncate">Team Members</dt>
                       <dd class="flex items-baseline">
-                        <div class="text-2xl font-semibold text-gray-900" id="team-count">0</div>
+                        <div class="text-2xl font-semibold text-gray-900">{{ stats.team }}</div>
                       </dd>
                     </dl>
                   </div>
@@ -137,25 +146,32 @@
           <!-- Tabs -->
           <div class="border-b border-gray-200 mb-6">
             <nav class="-mb-px flex space-x-8">
-              <button @click="activeTab = 'tools'" :class="{'border-blue-500 text-blue-600': activeTab === 'tools', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'tools'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button @click="activeTab = 'tools'" :class="{'border-blue-500 text-blue-600': activeTab === 'tools', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'tools'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Tools
               </button>
-              <button @click="activeTab = 'features'" :class="{'border-blue-500 text-blue-600': activeTab === 'features', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'features'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button @click="activeTab = 'features'" :class="{'border-blue-500 text-blue-600': activeTab === 'features', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'features'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Features
               </button>
-              <button @click="activeTab = 'faqs'" :class="{'border-blue-500 text-blue-600': activeTab === 'faqs', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'faqs'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button @click="activeTab = 'faqs'" :class="{'border-blue-500 text-blue-600': activeTab === 'faqs', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'faqs'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 FAQs
               </button>
-              <button @click="activeTab = 'testimonials'" :class="{'border-blue-500 text-blue-600': activeTab === 'testimonials', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'testimonials'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button @click="activeTab = 'testimonials'" :class="{'border-blue-500 text-blue-600': activeTab === 'testimonials', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'testimonials'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Testimonials
               </button>
-              <button @click="activeTab = 'about'" :class="{'border-blue-500 text-blue-600': activeTab === 'about', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'about'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button @click="activeTab = 'about'" :class="{'border-blue-500 text-blue-600': activeTab === 'about', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'about'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 About Us
               </button>
-              <button v-if="isSuperAdmin" @click="activeTab = 'settings'" :class="{'border-blue-500 text-blue-600': activeTab === 'settings', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'settings'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button v-if="isSuperAdmin" @click="activeTab = 'settings'" :class="{'border-blue-500 text-blue-600': activeTab === 'settings', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'settings'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Settings
               </button>
-              <button v-if="isSuperAdmin" @click="activeTab = 'admins'" :class="{'border-blue-500 text-blue-600': activeTab === 'admins', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'admins'}" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+              <button v-if="isSuperAdmin" @click="activeTab = 'admins'" :class="{'border-blue-500 text-blue-600': activeTab === 'admins', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'admins'}" 
+                      class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
                 Admins
               </button>
             </nav>
@@ -167,7 +183,7 @@
             <div v-if="activeTab === 'tools'" class="bg-white shadow rounded-lg p-6">
               <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-medium">Manage Tools</h2>
-                <button @click="openToolModal(null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button @click="openModal('tool', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                   <i class="fas fa-plus mr-2"></i> Add New Tool
                 </button>
               </div>
@@ -194,7 +210,7 @@
                         <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button @click="openToolModal(tool)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button @click="openModal('tool', tool)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
                         <button @click="confirmDelete('tool', tool.id)" class="text-red-600 hover:text-red-900">Delete</button>
                       </td>
                     </tr>
@@ -205,22 +221,169 @@
 
             <!-- Features Management -->
             <div v-if="activeTab === 'features'" class="bg-white shadow rounded-lg p-6">
-              <!-- Similar structure as Tools -->
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-medium">Manage Features</h2>
+                <button @click="openModal('feature', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <i class="fas fa-plus mr-2"></i> Add New Feature
+                </button>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Icon</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="feature in features" :key="feature.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ feature.title }}</div>
+                        <div class="text-sm text-gray-500">{{ feature.description.substring(0, 50) }}...</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-2xl">{{ feature.icon }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span v-if="feature.isActive" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                        <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button @click="openModal('feature', feature)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button @click="confirmDelete('feature', feature.id)" class="text-red-600 hover:text-red-900">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- FAQs Management -->
             <div v-if="activeTab === 'faqs'" class="bg-white shadow rounded-lg p-6">
-              <!-- Similar structure as Tools -->
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-medium">Manage FAQs</h2>
+                <button @click="openModal('faq', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <i class="fas fa-plus mr-2"></i> Add New FAQ
+                </button>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="faq in faqs" :key="faq.id">
+                      <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">{{ faq.question }}</div>
+                        <div class="text-sm text-gray-500">{{ faq.answer.substring(0, 50) }}...</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span v-if="faq.isActive" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                        <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button @click="openModal('faq', faq)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button @click="confirmDelete('faq', faq.id)" class="text-red-600 hover:text-red-900">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- Testimonials Management -->
             <div v-if="activeTab === 'testimonials'" class="bg-white shadow rounded-lg p-6">
-              <!-- Similar structure as Tools -->
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-medium">Manage Testimonials</h2>
+                <button @click="openModal('testimonial', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <i class="fas fa-plus mr-2"></i> Add New Testimonial
+                </button>
+              </div>
+              
+              <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="testimonial in testimonials" :key="testimonial.id">
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ testimonial.name }}</div>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ testimonial.role }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap">
+                        <span v-if="testimonial.isActive" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                        <span v-else class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                      </td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button @click="openModal('testimonial', testimonial)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button @click="confirmDelete('testimonial', testimonial.id)" class="text-red-600 hover:text-red-900">Delete</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- About Us Management -->
             <div v-if="activeTab === 'about'" class="bg-white shadow rounded-lg p-6">
-              <!-- Similar structure as Tools -->
+              <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-medium">Manage About Us Content</h2>
+                <button @click="openModal('about', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <i class="fas fa-plus mr-2"></i> Add Team Member
+                </button>
+              </div>
+              
+              <div class="space-y-6">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Mission Statement</label>
+                  <textarea v-model="about.mission" rows="3" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Our Story</label>
+                  <textarea v-model="about.story" rows="5" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+                
+                <div>
+                  <h3 class="text-md font-medium mb-4">Team Members</h3>
+                  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div v-for="(member, id) in about.team" :key="id" class="border rounded-lg p-4">
+                      <div class="flex items-center mb-3">
+                        <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mr-3">
+                          <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                          <h4 class="font-medium">{{ member.name }}</h4>
+                          <p class="text-sm text-gray-500">{{ member.role }}</p>
+                        </div>
+                      </div>
+                      <p class="text-sm text-gray-600 mb-3">{{ member.bio }}</p>
+                      <div class="flex space-x-2">
+                        <button @click="openModal('teamMember', { id, ...member })" class="text-sm text-blue-600 hover:text-blue-800">Edit</button>
+                        <button @click="confirmDelete('teamMember', id)" class="text-sm text-red-600 hover:text-red-800">Remove</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="pt-4">
+                  <button @click="saveAbout" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Save Changes
+                  </button>
+                </div>
+              </div>
             </div>
 
             <!-- Site Settings -->
@@ -259,7 +422,7 @@
             <div v-if="activeTab === 'admins' && isSuperAdmin" class="bg-white shadow rounded-lg p-6">
               <div class="flex justify-between items-center mb-6">
                 <h2 class="text-lg font-medium">Manage Admins</h2>
-                <button @click="openAdminModal(null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button @click="openModal('admin', null)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                   <i class="fas fa-plus mr-2"></i> Add New Admin
                 </button>
               </div>
@@ -285,7 +448,7 @@
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(admin.createdAt) }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button v-if="!admin.isSuperAdmin" @click="openAdminModal(admin)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
+                        <button v-if="!admin.isSuperAdmin" @click="openModal('admin', admin)" class="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
                         <button v-if="!admin.isSuperAdmin" @click="confirmDelete('admin', admin.id)" class="text-red-600 hover:text-red-900">Remove</button>
                       </td>
                     </tr>
@@ -299,8 +462,8 @@
     </div>
 
     <!-- Modals -->
-    <!-- Tool Modal -->
-    <div v-if="showToolModal" class="fixed inset-0 overflow-y-auto z-50">
+    <!-- Generic Modal -->
+    <div v-if="showModal" class="fixed inset-0 overflow-y-auto z-50">
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
           <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
@@ -309,40 +472,146 @@
         <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
-              {{ editingTool ? 'Edit Tool' : 'Add New Tool' }}
+              {{ modalTitle }}
             </h3>
-            <form @submit.prevent="saveTool">
+            <form @submit.prevent="saveItem">
               <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                <div class="sm:col-span-6">
-                  <label for="tool-title" class="block text-sm font-medium text-gray-700">Title</label>
-                  <input v-model="currentTool.title" type="text" id="tool-title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                </div>
-                <div class="sm:col-span-6">
-                  <label for="tool-description" class="block text-sm font-medium text-gray-700">Description</label>
-                  <textarea v-model="currentTool.description" id="tool-description" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
-                </div>
-                <div class="sm:col-span-3">
-                  <label for="tool-category" class="block text-sm font-medium text-gray-700">Category</label>
-                  <select v-model="currentTool.category" id="tool-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                    <option value="writing">Writing</option>
-                    <option value="design">Design</option>
-                    <option value="development">Development</option>
-                    <option value="marketing">Marketing</option>
-                    <option value="productivity">Productivity</option>
-                  </select>
-                </div>
-                <div class="sm:col-span-3">
-                  <label class="block text-sm font-medium text-gray-700">Status</label>
-                  <div class="mt-2">
-                    <label class="inline-flex items-center">
-                      <input v-model="currentTool.isActive" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
-                      <span class="ml-2 text-sm text-gray-700">Active</span>
-                    </label>
+                <!-- Dynamic form fields based on modalType -->
+                <template v-if="modalType === 'tool'">
+                  <div class="sm:col-span-6">
+                    <label for="tool-title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input v-model="currentItem.title" type="text" id="tool-title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                   </div>
-                </div>
+                  <div class="sm:col-span-6">
+                    <label for="tool-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea v-model="currentItem.description" id="tool-description" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label for="tool-category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select v-model="currentItem.category" id="tool-category" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                      <option value="writing">Writing</option>
+                      <option value="design">Design</option>
+                      <option value="development">Development</option>
+                      <option value="marketing">Marketing</option>
+                      <option value="productivity">Productivity</option>
+                    </select>
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <div class="mt-2">
+                      <label class="inline-flex items-center">
+                        <input v-model="currentItem.isActive" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                      </label>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="modalType === 'feature'">
+                  <div class="sm:col-span-6">
+                    <label for="feature-title" class="block text-sm font-medium text-gray-700">Title</label>
+                    <input v-model="currentItem.title" type="text" id="feature-title" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="feature-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea v-model="currentItem.description" id="feature-description" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label for="feature-icon" class="block text-sm font-medium text-gray-700">Icon</label>
+                    <input v-model="currentItem.icon" type="text" id="feature-icon" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <div class="mt-2">
+                      <label class="inline-flex items-center">
+                        <input v-model="currentItem.isActive" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                      </label>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="modalType === 'faq'">
+                  <div class="sm:col-span-6">
+                    <label for="faq-question" class="block text-sm font-medium text-gray-700">Question</label>
+                    <input v-model="currentItem.question" type="text" id="faq-question" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="faq-answer" class="block text-sm font-medium text-gray-700">Answer</label>
+                    <textarea v-model="currentItem.answer" id="faq-answer" rows="5" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <div class="mt-2">
+                      <label class="inline-flex items-center">
+                        <input v-model="currentItem.isActive" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                      </label>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="modalType === 'testimonial'">
+                  <div class="sm:col-span-6">
+                    <label for="testimonial-name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input v-model="currentItem.name" type="text" id="testimonial-name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="testimonial-role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <input v-model="currentItem.role" type="text" id="testimonial-role" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="testimonial-quote" class="block text-sm font-medium text-gray-700">Quote</label>
+                    <textarea v-model="currentItem.quote" id="testimonial-quote" rows="3" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                  </div>
+                  <div class="sm:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <div class="mt-2">
+                      <label class="inline-flex items-center">
+                        <input v-model="currentItem.isActive" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                      </label>
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else-if="modalType === 'teamMember'">
+                  <div class="sm:col-span-6">
+                    <label for="member-name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <input v-model="currentItem.name" type="text" id="member-name" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="member-role" class="block text-sm font-medium text-gray-700">Role</label>
+                    <input v-model="currentItem.role" type="text" id="member-role" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label for="member-bio" class="block text-sm font-medium text-gray-700">Bio</label>
+                    <textarea v-model="currentItem.bio" id="member-bio" rows="4" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
+                  </div>
+                </template>
+
+                <template v-else-if="modalType === 'admin'">
+                  <div class="sm:col-span-6">
+                    <label for="admin-email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input v-model="currentItem.email" type="email" id="admin-email" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div v-if="!currentItem.id" class="sm:col-span-6">
+                    <label for="admin-password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input v-model="currentItem.password" type="password" id="admin-password" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label class="block text-sm font-medium text-gray-700">Role</label>
+                    <div class="mt-2">
+                      <label class="inline-flex items-center">
+                        <input v-model="currentItem.isSuperAdmin" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <span class="ml-2 text-sm text-gray-700">Super Admin</span>
+                      </label>
+                    </div>
+                  </div>
+                </template>
               </div>
               <div class="mt-6 flex justify-end space-x-3">
-                <button @click="showToolModal = false" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button @click="showModal = false" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                   Cancel
                 </button>
                 <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -389,6 +658,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.min.js"></script>
   <script>
     // Firebase Configuration
     const firebaseConfig = {
@@ -406,21 +676,43 @@
     const db = firebase.database();
     const auth = firebase.auth();
 
-    // Simple Vue-like data binding
-    const app = {
+    // Vue App
+    const app = Vue.createApp({
       data() {
         return {
-          activeTab: 'tools',
+          loading: true,
+          user: null,
           isSuperAdmin: false,
-          showToolModal: false,
+          loginEmail: '',
+          loginPassword: '',
+          loginError: '',
+          
+          activeTab: 'tools',
+          showModal: false,
+          modalType: '',
+          modalTitle: '',
+          currentItem: {},
+          
           showDeleteModal: false,
           deleteType: '',
           deleteId: '',
+          
+          stats: {
+            tools: 0,
+            features: 0,
+            faqs: 0,
+            team: 0
+          },
+          
           tools: [],
           features: [],
           faqs: [],
           testimonials: [],
-          about: {},
+          about: {
+            mission: '',
+            story: '',
+            team: {}
+          },
           admins: [],
           siteSettings: {
             maintenanceMode: false,
@@ -428,142 +720,240 @@
               text: '',
               isActive: false
             }
-          },
-          currentTool: {
-            id: '',
-            title: '',
-            description: '',
-            category: 'writing',
-            isActive: true
-          },
-          user: null
+          }
         }
       },
       methods: {
-        async loadData() {
-          // Load all data from Firebase
+        async handleLogin() {
+          this.loginError = '';
           try {
-            const toolsSnapshot = await db.ref('tools').once('value');
+            await auth.signInWithEmailAndPassword(this.loginEmail, this.loginPassword);
+          } catch (error) {
+            this.loginError = error.message;
+          }
+        },
+        
+        async handleLogout() {
+          try {
+            await auth.signOut();
+          } catch (error) {
+            console.error("Error signing out:", error);
+          }
+        },
+        
+        async loadData() {
+          try {
+            // Load all data
+            const [toolsSnapshot, featuresSnapshot, faqsSnapshot, 
+                   testimonialsSnapshot, aboutSnapshot, 
+                   adminsSnapshot, settingsSnapshot] = await Promise.all([
+              db.ref('tools').once('value'),
+              db.ref('features').once('value'),
+              db.ref('faqs').once('value'),
+              db.ref('testimonials').once('value'),
+              db.ref('about').once('value'),
+              db.ref('adminUsers').once('value'),
+              db.ref('siteSettings').once('value')
+            ]);
+            
             this.tools = Object.entries(toolsSnapshot.val() || {}).map(([id, data]) => ({ id, ...data }));
-            
-            const featuresSnapshot = await db.ref('features').once('value');
             this.features = Object.entries(featuresSnapshot.val() || {}).map(([id, data]) => ({ id, ...data }));
-            
-            const faqsSnapshot = await db.ref('faqs').once('value');
             this.faqs = Object.entries(faqsSnapshot.val() || {}).map(([id, data]) => ({ id, ...data }));
-            
-            const testimonialsSnapshot = await db.ref('testimonials').once('value');
             this.testimonials = Object.entries(testimonialsSnapshot.val() || {}).map(([id, data]) => ({ id, ...data }));
-            
-            const aboutSnapshot = await db.ref('about').once('value');
-            this.about = aboutSnapshot.val() || {};
-            
-            const adminsSnapshot = await db.ref('adminUsers').once('value');
+            this.about = aboutSnapshot.val() || { mission: '', story: '', team: {} };
             this.admins = Object.entries(adminsSnapshot.val() || {}).map(([id, data]) => ({ id, ...data }));
-            
-            const settingsSnapshot = await db.ref('siteSettings').once('value');
             this.siteSettings = settingsSnapshot.val() || {
               maintenanceMode: false,
-              announcement: {
-                text: '',
-                isActive: false
-              }
+              announcement: { text: '', isActive: false }
             };
             
-            // Update counts
-            document.getElementById('tools-count').textContent = this.tools.length;
-            document.getElementById('features-count').textContent = this.features.filter(f => f.isActive).length;
-            document.getElementById('faqs-count').textContent = this.faqs.length;
-            document.getElementById('team-count').textContent = this.about.team ? Object.keys(this.about.team).length : 0;
+            // Update stats
+            this.stats = {
+              tools: this.tools.length,
+              features: this.features.filter(f => f.isActive).length,
+              faqs: this.faqs.length,
+              team: Object.keys(this.about.team || {}).length
+            };
             
           } catch (error) {
             console.error("Error loading data:", error);
+          } finally {
+            this.loading = false;
           }
         },
-        openToolModal(tool) {
-          if (tool) {
-            this.currentTool = { ...tool };
-          } else {
-            this.currentTool = {
-              id: '',
+        
+        openModal(type, item) {
+          this.modalType = type;
+          this.currentItem = item ? { ...item } : this.getDefaultItem(type);
+          this.modalTitle = this.getModalTitle(type, item);
+          this.showModal = true;
+        },
+        
+        getDefaultItem(type) {
+          const defaults = {
+            tool: {
               title: '',
               description: '',
               category: 'writing',
               isActive: true
-            };
-          }
-          this.showToolModal = true;
-        },
-        async saveTool() {
-          try {
-            if (this.currentTool.id) {
-              // Update existing tool
-              await db.ref(`tools/${this.currentTool.id}`).update({
-                title: this.currentTool.title,
-                description: this.currentTool.description,
-                category: this.currentTool.category,
-                isActive: this.currentTool.isActive,
-                updatedAt: new Date().toISOString()
-              });
-            } else {
-              // Create new tool
-              const newToolRef = db.ref('tools').push();
-              await newToolRef.set({
-                title: this.currentTool.title,
-                description: this.currentTool.description,
-                category: this.currentTool.category,
-                isActive: this.currentTool.isActive,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
-              });
+            },
+            feature: {
+              title: '',
+              description: '',
+              icon: '⭐',
+              isActive: true
+            },
+            faq: {
+              question: '',
+              answer: '',
+              isActive: true
+            },
+            testimonial: {
+              name: '',
+              role: '',
+              quote: '',
+              isActive: true
+            },
+            teamMember: {
+              name: '',
+              role: '',
+              bio: ''
+            },
+            admin: {
+              email: '',
+              password: '',
+              isSuperAdmin: false
             }
-            this.showToolModal = false;
+          };
+          return defaults[type] || {};
+        },
+        
+        getModalTitle(type, item) {
+          const titles = {
+            tool: item ? 'Edit Tool' : 'Add New Tool',
+            feature: item ? 'Edit Feature' : 'Add New Feature',
+            faq: item ? 'Edit FAQ' : 'Add New FAQ',
+            testimonial: item ? 'Edit Testimonial' : 'Add New Testimonial',
+            teamMember: item ? 'Edit Team Member' : 'Add Team Member',
+            admin: item ? 'Edit Admin' : 'Add New Admin'
+          };
+          return titles[type] || '';
+        },
+        
+        async saveItem() {
+          try {
+            const now = new Date().toISOString();
+            
+            if (this.modalType === 'admin' && !this.currentItem.id) {
+              // Create new admin user
+              const { user } = await auth.createUserWithEmailAndPassword(
+                this.currentItem.email, 
+                this.currentItem.password
+              );
+              
+              await db.ref(`adminUsers/${user.uid}`).set({
+                email: this.currentItem.email,
+                isSuperAdmin: this.currentItem.isSuperAdmin,
+                createdAt: now
+              });
+              
+            } else if (this.modalType === 'admin' && this.currentItem.id) {
+              // Update admin
+              await db.ref(`adminUsers/${this.currentItem.id}`).update({
+                isSuperAdmin: this.currentItem.isSuperAdmin
+              });
+              
+            } else if (this.modalType === 'teamMember') {
+              // Handle team member
+              const teamRef = this.currentItem.id 
+                ? db.ref(`about/team/${this.currentItem.id}`)
+                : db.ref('about/team').push();
+              
+              await teamRef.set({
+                name: this.currentItem.name,
+                role: this.currentItem.role,
+                bio: this.currentItem.bio
+              });
+              
+            } else {
+              // Handle other content types
+              const refPath = `${this.modalType}s${this.currentItem.id ? `/${this.currentItem.id}` : ''}`;
+              const data = { ...this.currentItem };
+              
+              if (this.currentItem.id) {
+                data.updatedAt = now;
+                await db.ref(refPath).update(data);
+              } else {
+                data.createdAt = now;
+                data.updatedAt = now;
+                await db.ref(refPath).set(data);
+              }
+            }
+            
+            this.showModal = false;
             this.loadData();
+            
           } catch (error) {
-            console.error("Error saving tool:", error);
+            console.error("Error saving item:", error);
+            alert('Error: ' + error.message);
           }
         },
+        
         confirmDelete(type, id) {
           this.deleteType = type;
           this.deleteId = id;
           this.showDeleteModal = true;
         },
+        
         async confirmDeleteAction() {
           try {
-            await db.ref(`${this.deleteType}s/${this.deleteId}`).remove();
+            if (this.deleteType === 'admin') {
+              // Delete admin user
+              await db.ref(`adminUsers/${this.deleteId}`).remove();
+            } else if (this.deleteType === 'teamMember') {
+              // Delete team member
+              await db.ref(`about/team/${this.deleteId}`).remove();
+            } else {
+              // Delete regular content
+              await db.ref(`${this.deleteType}s/${this.deleteId}`).remove();
+            }
+            
             this.showDeleteModal = false;
             this.loadData();
+            
           } catch (error) {
             console.error("Error deleting:", error);
+            alert('Error: ' + error.message);
           }
         },
+        
+        async saveAbout() {
+          try {
+            await db.ref('about').set(this.about);
+            alert('About content saved successfully!');
+          } catch (error) {
+            console.error("Error saving about content:", error);
+            alert('Error: ' + error.message);
+          }
+        },
+        
         async saveSettings() {
           try {
             await db.ref('siteSettings').set(this.siteSettings);
             alert('Settings saved successfully!');
           } catch (error) {
             console.error("Error saving settings:", error);
+            alert('Error: ' + error.message);
           }
         },
+        
         formatDate(dateString) {
           return new Date(dateString).toLocaleDateString();
-        },
-        async logout() {
-          try {
-            await auth.signOut();
-            this.user = null;
-            document.getElementById('admin-panel').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-          } catch (error) {
-            console.error("Error signing out:", error);
-          }
         }
       },
       mounted() {
         // Check auth state
         auth.onAuthStateChanged(async (user) => {
-          document.getElementById('loading-screen').classList.add('hidden');
-          
           if (user) {
             this.user = user;
             
@@ -571,68 +961,20 @@
             const adminSnapshot = await db.ref(`adminUsers/${user.uid}`).once('value');
             if (adminSnapshot.exists()) {
               this.isSuperAdmin = adminSnapshot.val().isSuperAdmin || false;
-              
-              // Set user avatar initial
-              document.getElementById('user-avatar').textContent = user.email.charAt(0).toUpperCase();
-              
-              // Show admin panel
-              document.getElementById('admin-panel').classList.remove('hidden');
-              document.getElementById('login-screen').classList.add('hidden');
-              
-              // Load data
               this.loadData();
             } else {
-              // Not an admin, show error
-              document.getElementById('login-error').textContent = 'You do not have admin access.';
-              document.getElementById('login-error').classList.remove('hidden');
+              // Not an admin, log out
+              this.loginError = 'You do not have admin access.';
               await auth.signOut();
             }
           } else {
-            // Not logged in, show login screen
-            document.getElementById('login-screen').classList.remove('hidden');
+            this.user = null;
           }
-        });
-        
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const email = document.getElementById('email').value;
-          const password = document.getElementById('password').value;
-          
-          try {
-            await auth.signInWithEmailAndPassword(email, password);
-          } catch (error) {
-            document.getElementById('login-error').textContent = error.message;
-            document.getElementById('login-error').classList.remove('hidden');
-          }
-        });
-        
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', this.logout.bind(this));
-        
-        // Simple data binding
-        const self = this;
-        document.querySelectorAll('[v-model]').forEach(el => {
-          const property = el.getAttribute('v-model');
-          el.addEventListener('input', (e) => {
-            const path = property.split('.');
-            if (path.length > 1) {
-              self[path[0]][path[1]] = e.target.value;
-            } else {
-              self[property] = e.target.value;
-            }
-          });
-        });
-        
-        document.querySelectorAll('[\\@click]').forEach(el => {
-          const method = el.getAttribute('@click');
-          el.addEventListener('click', self[method].bind(self));
         });
       }
-    };
-    
-    // Initialize the app
-    app.mounted();
+    });
+
+    app.mount('#app');
   </script>
 </body>
-  </html>
+                          </html>
